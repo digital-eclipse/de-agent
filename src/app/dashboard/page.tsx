@@ -74,23 +74,21 @@ export default function Dashboard() {
     };
   
     try {
-      console.log('Submitting data:', data); // Log the data being sent
-      const response = await fetch('https://script.google.com/macros/s/AKfycbyYDJ9wf2JQvUm63tjrQ4X_O8WE1xLpi_NDG5vxqb6ufi29LKDnBAi5lLH4AuiQGFqe/exec', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        'https://script.google.com/macros/s/AKfycbwFM6W1wOqeq-Ad-ZH3L0QHfy9Y-EjT2aShouL2N9H-EzR0bYYqjE25bpbzHn5fFdhd/exec',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        }
+      );
   
-      console.log('Response status:', response.status); // Log the response status
-      if (response.ok) {
-        alert('Data submitted successfully!');
-      } else {
-        alert('Failed to submit data.');
-      }
+      const result = await response.json();
+      alert(result.message || 'Data submitted successfully!');
     } catch (error) {
-      console.error('Error submitting data:', error); // Log the error
+      console.error('Error submitting data:', error);
       alert('An error occurred while submitting data.');
     }
   };
