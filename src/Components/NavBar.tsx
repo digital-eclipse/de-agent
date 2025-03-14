@@ -1,42 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react'; // Import useRef
-import { useRouter } from 'next/navigation'; // Import useRouter
-import Link from 'next/link';
-import Logo from '../../public/images/logo.svg';
-import { Contact } from 'lucide-react';
 
 export default function NavBar() {
-  const router = useRouter(); // Initialize the router
   const [menuOpen, setMenuOpen] = useState(false); // State for mobile menu
   const menuRef = useRef<HTMLDivElement>(null); // Ref for the mobile menu
-
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-
-  const calendlyLink = "https://calendly.com/digitaleclipse";
-
-  // Function to handle navigation and scrolling
-  const navigateAndScroll = (id: string) => {
-    if (window.location.pathname !== '/') {
-      // If not on the home page, navigate to the home page first
-      router.push('/');
-      // Wait for the navigation to complete, then scroll to the section
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100); // Adjust the delay as needed
-    } else {
-      // If already on the home page, scroll to the section
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  };
 
   // Close the menu when clicking outside
   useEffect(() => {
