@@ -75,7 +75,7 @@ export default function Dashboard() {
   
     try {
       console.log('Submitting data:', data); // Log the data being sent
-      const response = await fetch('https://script.google.com/macros/s/AKfycbzwnJsddkO5QhdiAh6ZMgRg3fleVVjPUK4XIbB31IY/dev', {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbyYDJ9wf2JQvUm63tjrQ4X_O8WE1xLpi_NDG5vxqb6ufi29LKDnBAi5lLH4AuiQGFqe/exec', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
