@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 // Hardcoded user credentials
@@ -35,6 +35,14 @@ export default function Home() {
       setError('Invalid username or password');
     }
   };
+
+  // Check if the user is already logged in (client-side only)
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (isLoggedIn) {
+      router.push('/dashboard'); // Redirect to the dashboard if already logged in
+    }
+  }, [router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#FFF3DF]">
