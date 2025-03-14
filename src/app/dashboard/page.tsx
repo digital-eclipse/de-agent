@@ -1,36 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
-// Reusable Counter Component
-function Counter({ label, value, onIncrement, onDecrement }: {
-  label: string;
-  value: number;
-  onIncrement: () => void;
-  onDecrement: () => void;
-}) {
-  return (
-    <div className="flex items-center justify-between w-64 mb-4">
-      <button
-        onClick={onDecrement}
-        className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
-      >
-        -
-      </button>
-      <div className="text-center">
-        <p className="text-lg font-semibold text-black">{label}</p>
-        <p className="text-xl text-black">{value}</p>
-      </div>
-      <button
-        onClick={onIncrement}
-        className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
-      >
-        +
-      </button>
-    </div>
-  );
-}
 
 export default function Dashboard() {
   const router = useRouter();
@@ -52,13 +23,16 @@ export default function Dashboard() {
   // Check if the user is logged in (client-side only)
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const storedUsername = localStorage.getItem('username');
+
     if (!isLoggedIn) {
       router.push('/'); // Redirect to the login page if not logged in
     } else {
-      setUsername(localStorage.getItem('username')); // Set the username from localStorage
+      setUsername(storedUsername); // Set the username from localStorage
     }
   }, [router]);
 
+  // Function to submit data to Google Sheets
   const submitData = async () => {
     const data = {
       username,
@@ -72,21 +46,22 @@ export default function Dashboard() {
       meeting,
       declined,
     };
-  
+
     try {
-      const response = await fetch(
-        'https://script.google.com/macros/s/AKfycbwFM6W1wOqeq-Ad-ZH3L0QHfy9Y-EjT2aShouL2N9H-EzR0bYYqjE25bpbzHn5fFdhd/exec',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        }
-      );
-  
+      const response = await fetch('/api/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
       const result = await response.json();
-      alert(result.message || 'Data submitted successfully!');
+      if (result.error) {
+        alert(`Error: ${result.error}`);
+      } else {
+        alert(result.message);
+      }
     } catch (error) {
       console.error('Error submitting data:', error);
       alert('An error occurred while submitting data.');
@@ -103,67 +78,194 @@ export default function Dashboard() {
 
       {/* Counter Div */}
       <div className="mt-8">
-        <Counter
-          label="Call 1"
-          value={call1}
-          onIncrement={() => setCall1(call1 + 1)}
-          onDecrement={() => setCall1(call1 - 1)}
-        />
-        <Counter
-          label="Call 2"
-          value={call2}
-          onIncrement={() => setCall2(call2 + 1)}
-          onDecrement={() => setCall2(call2 - 1)}
-        />
-        <Counter
-          label="Call 3"
-          value={call3}
-          onIncrement={() => setCall3(call3 + 1)}
-          onDecrement={() => setCall3(call3 - 1)}
-        />
-        <Counter
-          label="FU"
-          value={FU}
-          onIncrement={() => setFU(FU + 1)}
-          onDecrement={() => setFU(FU - 1)}
-        />
-        <Counter
-          label="Email 1"
-          value={email1}
-          onIncrement={() => setEmail1(email1 + 1)}
-          onDecrement={() => setEmail1(email1 - 1)}
-        />
-        <Counter
-          label="Email 2"
-          value={email2}
-          onIncrement={() => setEmail2(email2 + 1)}
-          onDecrement={() => setEmail2(email2 - 1)}
-        />
-        <Counter
-          label="Email 3"
-          value={email3}
-          onIncrement={() => setEmail3(email3 + 1)}
-          onDecrement={() => setEmail3(email3 - 1)}
-        />
-        <Counter
-          label="Meeting"
-          value={meeting}
-          onIncrement={() => setMeeting(meeting + 1)}
-          onDecrement={() => setMeeting(meeting - 1)}
-        />
-        <Counter
-          label="Declined"
-          value={declined}
-          onIncrement={() => setDeclined(declined + 1)}
-          onDecrement={() => setDeclined(declined - 1)}
-        />
+        <div className="flex flex-col gap-4">
+          {/* Call 1 */}
+          <div className="flex items-center justify-between w-64">
+            <p className="text-lg font-semibold text-black">Call 1</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setCall1(call1 - 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                -
+              </button>
+              <p className="text-xl text-black">{call1}</p>
+              <button
+                onClick={() => setCall1(call1 + 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          {/* Call 2 */}
+          <div className="flex items-center justify-between w-64">
+            <p className="text-lg font-semibold text-black">Call 2</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setCall2(call2 - 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                -
+              </button>
+              <p className="text-xl text-black">{call2}</p>
+              <button
+                onClick={() => setCall2(call2 + 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          {/* Call 3 */}
+          <div className="flex items-center justify-between w-64">
+            <p className="text-lg font-semibold text-black">Call 3</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setCall3(call3 - 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                -
+              </button>
+              <p className="text-xl text-black">{call3}</p>
+              <button
+                onClick={() => setCall3(call3 + 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          {/* FU */}
+          <div className="flex items-center justify-between w-64">
+            <p className="text-lg font-semibold text-black">FU</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setFU(FU - 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                -
+              </button>
+              <p className="text-xl text-black">{FU}</p>
+              <button
+                onClick={() => setFU(FU + 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          {/* Email 1 */}
+          <div className="flex items-center justify-between w-64">
+            <p className="text-lg font-semibold text-black">Email 1</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setEmail1(email1 - 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                -
+              </button>
+              <p className="text-xl text-black">{email1}</p>
+              <button
+                onClick={() => setEmail1(email1 + 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          {/* Email 2 */}
+          <div className="flex items-center justify-between w-64">
+            <p className="text-lg font-semibold text-black">Email 2</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setEmail2(email2 - 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                -
+              </button>
+              <p className="text-xl text-black">{email2}</p>
+              <button
+                onClick={() => setEmail2(email2 + 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          {/* Email 3 */}
+          <div className="flex items-center justify-between w-64">
+            <p className="text-lg font-semibold text-black">Email 3</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setEmail3(email3 - 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                -
+              </button>
+              <p className="text-xl text-black">{email3}</p>
+              <button
+                onClick={() => setEmail3(email3 + 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          {/* Meeting */}
+          <div className="flex items-center justify-between w-64">
+            <p className="text-lg font-semibold text-black">Meeting</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setMeeting(meeting - 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                -
+              </button>
+              <p className="text-xl text-black">{meeting}</p>
+              <button
+                onClick={() => setMeeting(meeting + 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          {/* Declined */}
+          <div className="flex items-center justify-between w-64">
+            <p className="text-lg font-semibold text-black">Declined</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setDeclined(declined - 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                -
+              </button>
+              <p className="text-xl text-black">{declined}</p>
+              <button
+                onClick={() => setDeclined(declined + 1)}
+                className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              >
+                +
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Submit Button */}
       <div className="mt-8">
         <button
           onClick={submitData}
-          className="w-full bg-blue-800 text-white py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+          className="w-full mt-4 bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
         >
           Submit Data
         </button>
@@ -177,7 +279,7 @@ export default function Dashboard() {
             localStorage.removeItem('username');
             router.push('/');
           }}
-          className="w-full bg-white text-black py-2 px-4 rounded-md hover:bg-[#FFF3DF] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="w-full mt-4 bg-white text-black py-2 px-4 rounded-md hover:bg-[#FFF3DF] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           Logout
         </button>
