@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 // Hardcoded user credentials
 const users = [
-  { username: 'Jes', password: 'jes123!@#' },
+  { username: 'Jess', password: 'jess123!@#' },
   { username: 'Josie', password: 'josie@@@222' },
   { username: 'Joe', password: 'joe!!@@##' },
   { username: 'Wenky', password: 'wenky321#@!' },
